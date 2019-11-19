@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/mui.min.js"></script>
+		<script src="js/time.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">考勤打卡</h1>
+		</header>
+		<div class="mui-content">
+			<hr>
+			<div align="center" style="color:black">
+				<p id="time"></p>
+			</div>
+			<hr>
+			<div align="center">
+				<p>上班打卡时间：<span id="sbdksj">未打卡</span></p>
+				<p>下班打卡时间：<span id="xbdksj">未打卡</span></p>
+			</div>
+			<hr>
+			<div align="center">
+				<button onclick="daka('on','00:00:00')" class="mui-btn mui-btn-primary mui-btn-outlined">上班打卡</button>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<button onclick="daka('off','23:59:59')" class="mui-btn mui-btn-danger mui-btn-outlined">下班打卡</button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		//获取打卡信息
+		mui.ajax('https://e-cology.com.cn/api/hrm/kq/attendanceButton/getButtons', {
+			headers: {
+				"accept": "*/*",
+				"pragma": "no-cache"
+			},
+			dataType: 'json', //服务器返回json格式数据
+			type: 'post', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			async: false,
+			success: function(data) {
+				if (data.timeline[0].active == 0) {
+					document.getElementById("sbdksj").innerHTML = data.timeline[0].signTime;
+				}
+				if (data.timeline[1].active == 0) {
+					document.getElementById("xbdksj").innerHTML = data.timeline[1].signTime;
+				}
+			}
+		});
+
+		//打卡
+		function daka(type, canSignTime) {
+			var ajaxData = {
+				"date": riqi,
+				"belongdate": riqi,
+				"signSection": riqi + " 00:00:00:00#" + riqi + " 23:59:59",
+				"signInTime4Out": document.getElementById("sbdksj").innerHTML,
+				"signSectionTime": riqi + " " + canSignTime,
+				"active": 1,
+				"needSign": 1,
+				"type": type,
+				"canSignTime": canSignTime
+			};
+			mui.ajax('https://e-cology.com.cn/api/hrm/kq/attendanceButton/punchButton', {
+				data: ajaxData,
+				headers: {
+					"accept": "*/*",
+					"pragma": "no-cache"
+				},
+				dataType: 'json', //服务器返回json格式数据
+				type: 'post', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				success: function(data) {
+					mui.alert(data.message, '提示', '确定', function(e) {
+						location.reload();
+					}, 'div')
+				}
+			});
+		}
+	</script>
+</html>

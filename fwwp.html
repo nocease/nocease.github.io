@@ -1,0 +1,242 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/mui.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" />
+		<script src="https://www.layuicdn.com/layui-v2.5.5/layui.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+	<style type="text/css">
+		.mui-card-link {
+			color: blue;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-icon mui-icon-upload mui-pull-right" id="up"></a>
+			<h1 class="mui-title">我的云盘</h1>
+		</header>
+		<div class="mui-content" id="context"></div>
+	</body>
+	<script type="text/javascript">
+		var userid = "";
+		var deptid = "";
+		//获取用户id、部门id
+		mui.ajax('https://e-cology.com.cn/api/portal/account/getAccount', {
+			dataType: 'json', //服务器返回json格式数据
+			type: 'get', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			async: false,
+			headers: {
+				"accept": "*/*",
+				"pragma": "no-cache"
+			},
+			success: function(data) {
+				userid = data.data.userid;
+				deptid = data.data.deptid;
+			}
+		});
+
+		//获取全部文件
+		mui.ajax('https://e-cology.com.cn/rdeploy/chatproject/doc/dsm.jsp?', {
+			data: {
+				foldertype: "privateAll",
+				categoryid: 0,
+				orderby: "time"
+			},
+			headers: {
+				"accept": "*/*",
+				"pragma": "no-cache"
+			},
+			dataType: 'json', //服务器返回json格式数据
+			type: 'post', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			success: function(data) {
+				mui.each(data, function(index, element) {
+					document.getElementById("context").innerHTML +=
+						'<div class="mui-card"> <div class="mui-card-header">' + element.fullName + '<p>' + element.fileSize +
+						'</p> </div> <div class="mui-card-content" align="center">上传时间： ' + element.datetime +
+						'</div> <div class="mui-card-footer"><a class="mui-card-link" onclick="upname(' + element.docid + ',' + '\'' +
+						element.fullName + '\'' +
+						')">重命名</a> <a class="mui-card-link" onclick="del(' + element.docid +
+						')">删除</a><a class="mui-card-link" onclick="yulan(' +
+						element.docid + ')">预览</a> <a class="mui-card-link" onclick="down(' +
+						element.docid + ')">下载</a></div> </div>';
+				})
+			}
+		});
+
+		//删除文件
+		function del(id) {
+			//alert(id);
+			mui.confirm('确定删除？', '提示', ['取消', '确认'], function(e) {
+				if (e.index == 1) {
+					mui.ajax('https://e-cology.com.cn/rdeploy/chatproject/doc/eventForAjax.jsp', {
+						data: {
+							fileid: id,
+							type: "delete"
+						},
+						headers: {
+							"accept": "*/*",
+							"pragma": "no-cache"
+						},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						success: function(data) {
+							location.reload();
+						}
+					});
+				}
+			}, 'div')
+		}
+
+		//重命名文件
+		function upname(id, fname) {
+			var fileExtension = "." + fname.split('.').pop();
+			mui.prompt('请输入新文件名：', fname, '重命名', ['取消', '确认'], function(e) {
+				if (e.index == 1) {
+					if (e.value != "") {
+						var newName = e.value + fileExtension;
+						mui.ajax('https://e-cology.com.cn/rdeploy/chatproject/doc/renameImageFile.jsp', {
+							data: {
+								fileName: newName,
+								imagefileid: id,
+								categoryid: 0
+							},
+							headers: {
+								"accept": "*/*",
+								"pragma": "no-cache"
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							success: function(data) {
+								if (data.result == "success") {
+									mui.toast("修改成功！");
+									location.reload();
+								} else {
+									mui.toast("失败。。");
+								}
+							}
+						});
+					}
+				}
+			}, 'div')
+		}
+
+		//下载文件
+		function down(id) {
+			var xmlhttp = new XMLHttpRequest();
+			// get方法带参数是将参数写在url里面传过去给后端
+			xmlhttp.open("GET", 'https://e-cology.com.cn/weaver/weaver.file.FileDownload?download=1&fileid=' + id, true);
+			xmlhttp.setRequestHeader("accept", "*/*");
+			xmlhttp.setRequestHeader("pragma", "no-cache");
+			xmlhttp.send();
+			// readyState == 4 为请求完成，status == 200为请求陈宫返回的状态
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 2 && xmlhttp.status == 200) {
+					var url = xmlhttp.responseURL;
+					xmlhttp.abort(); //终止请求
+					mui.confirm('下载文件？', '提示', ['复制链接', '直接下载'], function(e) {
+						if (e.index == 0) {
+							copy(url);
+							mui.toast('复制成功！')
+						} else if (e.index == 1) {
+							plus.runtime.openURL(url);
+						}
+					}, 'div')
+				}
+			}
+		}
+
+		//预览页面
+		function yulan(id) {
+			// mui.openWindow({
+			// 	url: 'iframe.html',
+			// 	extras: {
+			// 		title: '文件预览',
+			// 		src: 'https://e-cology.com.cn/rdeploy/chatproject/doc/imageFileView.jsp?fileid=' + id
+			// 	}
+			// });
+			mui.openWindow('https://e-cology.com.cn/rdeploy/chatproject/doc/imageFileView.jsp?fileid=' + id)
+		}
+
+		//文件上传成功后设置所属人
+		function fileSetUser(fileId, fileSize) {
+			mui.ajax('https://e-cology.com.cn/rdeploy/doc/MultiDocMaintOpration.jsp?foldertype=privateAll', {
+				data: {
+					imgFileId: fileId,
+					seccategory: 0,
+					ownerid: userid,
+					doclangurage: 7,
+					docdepartmentid: deptid,
+					fileSize: fileSize
+				},
+				dataType: 'json', //服务器返回json格式数据
+				type: 'post', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				async: false,
+				success: function(data) {
+					location.reload();
+				}
+			});
+		}
+
+		//文件上传
+		layui.use('upload', function() {
+			var upload = layui.upload;
+			var fileName = ""; //选择的文件名
+			var fileSize = 0; //文件大小:字节
+			//执行实例
+			var uploadInst = upload.render({
+				elem: '#up',
+				url: 'https://e-cology.com.cn/rdeploy/doc/MultiDocUpload.jsp;jsessionid=undefined',
+				accept: 'file',
+				headers: {
+					"accept": "*/*",
+					"pragma": "no-cache"
+				},
+				field: 'Filedata',
+				before: function(obj) {
+					//将每次选择的文件追加到文件队列
+					var files = obj.pushFile();
+					//预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
+					obj.preview(function(index, file, result) {
+						fileName = file.name;
+						fileSize = file.size;
+					});
+				},
+				data: {
+					name: function() {
+						return fileName;
+					}
+				},
+				done: function(obj) {
+					fileSetUser(obj.imageid, fileSize);
+				},
+				progress: function(n) {
+					if (n == 10)
+						mui.toast('上传进度：10%');
+					if (n == 30)
+						mui.toast('上传进度：30%');
+					if (n == 50)
+						mui.toast('上传进度：50%');
+					if (n == 70)
+						mui.toast('上传进度：70%');
+					if (n == 90)
+						mui.toast('上传进度：90%');
+					if (n == 99)
+						mui.toast('上传完成');
+				}
+			});
+		});
+	</script>
+</html>

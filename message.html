@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">找人</h1>
+		</header>
+		<div class="mui-content">
+			<div>
+				<div class="mui-input-row mui-search">
+					<input type="search" class="mui-input-clear" placeholder="Message找人：" id="msg">
+				</div>
+				<div id="users">
+
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		//获取三个密钥
+		var id = "";
+		var code = "";
+		var access_token = "";
+		var userid = ""; //用户id
+		mui.ajax('https://e-cology.com.cn/api/ec/dev/app/getSSOCode', {
+			dataType: 'json', //服务器返回json格式数据
+			type: 'get', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			async: false,
+			headers: {
+				"accept": "*/*",
+				"pragma": "no-cache"
+			},
+			success: function(data) {
+				code = data.keycode;
+			}
+		});
+		mui.ajax('https://e-cology.com.cn/api/ec/dev/app/test', {
+			dataType: 'json', //服务器返回json格式数据
+			type: 'get', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			async: false,
+			headers: {
+				"accept": "*/*",
+				"pragma": "no-cache"
+			},
+			success: function(data) {
+				id = data.ec_id;
+			}
+		});
+		var obj = {
+			"ec_auth_code": code,
+			"ec_id": id,
+			"login_type": 1,
+			"client_type": 4,
+			"lang_type": "zh",
+			"os_version": "web",
+			"user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36",
+			"client_model": "iframe"
+		};
+		mui.ajax('https://em.e-cology.com.cn/emp/passport/eclogin', {
+			data: JSON.stringify(obj),
+			headers: {
+				"accept": "*/*",
+				"pragma": "no-cache",
+				"content-type": "application/json"
+			},
+			dataType: 'json', //服务器返回json格式数据
+			type: 'post', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			async: false,
+			success: function(data) {
+				access_token = data.access_token;
+			}
+		});
+		mui.ajax('https://e-cology.com.cn/api/ec/dev/app/getUserInfo', {
+			dataType: 'json', //服务器返回json格式数据
+			type: 'get', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			async: false,
+			headers: {
+				"accept": "*/*",
+				"pragma": "no-cache"
+			},
+			success: function(data) {
+				userid = data.userid;
+			}
+		});
+
+		//找人
+		document.getElementById("msg").addEventListener("input", function() {
+			var msg = document.getElementById("msg").value;
+			document.getElementById("users").innerHTML = "";
+			if (msg != "") {
+				mui.ajax(
+					'https://em.e-cology.com.cn/emp/api/baseuser/search?getTime=1573826248675&search_type=', {
+						headers: {
+							"accept": "*/*",
+							"pragma": "no-cache",
+							"emaccesstk": access_token
+						},
+						data: {
+							keyword: msg
+						},
+						//async: false,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'get', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						success: function(data) {
+							mui(data.userlist).each(function(index, element) {
+								if (index < 35)
+									document.getElementById("users").innerHTML +=
+									'<div class="mui-card" style="width: 320px;margin: 15px auto;"> <div class="mui-card-header mui-card-media"> <div class="mui-media-body" style="margin:10px"> ' +
+									element.name + '-----' + element.position + '<p>直接上级：' + element.manager_name +
+									'</p> </div> </div> <div class="mui-card-content" style="margin-left: 15%;"><span>电话：' + element.mobile +
+									'</span><br><span>邮箱：' + element.email + '</span> </div><div class="mui-card-footer"> <a></a> <a>' +
+									element.deptlist[0] + '</a><a onclick="call(' +
+									element.mobile + ')" class="mui-icon mui-icon-phone"></a>	</div> </div>';
+							})
+						}
+					});
+			}
+		})
+
+		// //留言message
+		// 	 function send(id) {
+		// 		var msgobj = {
+		// 			"type": "answer",
+		// 			"msgId": guid(),
+		// 			"text": "测试文本3",
+		// 			"userId": userid,
+		// 			"receivers": id,
+		// 			"sender": userid,
+		// 			"receiverType": 1
+		// 		};
+		// 		mui.ajax('https://customer.easst.cn/outside/emessage/question/request', {
+		// 			data: JSON.stringify(msgobj),
+		// 			headers: {
+		// 				"accept": "*/*",
+		// 				"pragma": "no-cache",
+		// 				"content-type": "application/json"
+		// 			},
+		// 			dataType: 'json', //服务器返回json格式数据
+		// 			type: 'post', //HTTP请求类型
+		// 			timeout: 10000, //超时时间设置为10秒；
+		// 			async: false,
+		// 			success: function(data) {
+		// 				alert(JSON.stringify(data));
+		// 			},
+		// 			error: function(xhr, type, errorThrown) {
+		// 				alert("连接Message失败。。。");
+		// 			}
+		// 		});
+		// 	} 
+
+		//电话
+		function call(phone) {
+			mui.confirm('是否拨打“' + phone + '”?', '提示', ['取消', '添加到通讯录', '直接呼叫'], function(e) {
+				if (e.index == 0) {
+
+				} else if (e.index == 1) {
+					plus.device.dial(phone, true);
+				} else if (e.index == 2) {
+					plus.device.dial(phone, false);
+				}
+			});
+		}
+
+		//uuid
+		function guid() {
+			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+				var r = Math.random() * 16 | 0,
+					v = c == 'x' ? r : (r & 0x3 | 0x8);
+				return v.toString(16);
+			});
+		}
+	</script>
+</html>

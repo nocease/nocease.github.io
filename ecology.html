@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+	<style type="text/css">
+		.mui-card-content {
+			margin: 20px;
+		}
+
+		.mui-btn {
+			width: 150px;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">Ecology下载</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-card">
+				<div class="mui-card-header">Ecology9最新版</div>
+				<div class="mui-card-content">
+					<button id="button9" class="mui-btn mui-btn-primary mui-btn-outlined">查看下载</button>
+				</div>
+				<div class="mui-card-footer">最后更新时间：<span id="date9"></span></div>
+			</div>
+			<div class="mui-card">
+				<div class="mui-card-header">Ecology8最新版</div>
+				<div class="mui-card-content">
+					<button id="button8" class="mui-btn mui-btn-success mui-btn-outlined">查看下载</button>
+				</div>
+				<div class="mui-card-footer">最后更新时间：<span id="date8"></span></div>
+			</div>
+			<div class="mui-card">
+				<div class="mui-card-header">Ecology7最终版</div>
+				<div class="mui-card-content">
+					<button id="button7" class="mui-btn mui-btn-warning mui-btn-outlined">查看下载</button>
+				</div>
+				<div class="mui-card-footer">最后更新时间：<span id="date7"></span></div>
+			</div>
+			<div style="margin: 5%;text-align: center;">
+				<p>以上资料和[技术门户]的文档同步更新！</p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		//获取更新文档信息
+		mui.ajax('https://e-cology.com.cn/api/portal/element/newstab', {
+			data: {
+				eid: 40370,
+				hpid: 108,
+				subCompanyId: 1,
+				styleid: "package3",
+				ebaseid: 7,
+				tabid: 1
+			},
+			dataType: 'json', //服务器返回json格式数据
+			type: 'post', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			async: false,
+			headers: {
+				"accept": "*/*",
+				"pragma": "no-cache"
+			},
+			success: function(json) {
+				document.getElementById("date9").innerHTML = json.data[0].doclastmoddate;
+				document.getElementById("date8").innerHTML = json.data[1].doclastmoddate;
+				document.getElementById("date7").innerHTML = json.data[2].doclastmoddate;
+				document.getElementById("button9").onclick = function() {
+					copy("4ujz");
+					mui.openWindow({
+						url: 'iframe.html',
+						extras: {
+							title: 'Ecology9下载',
+							src: "https://pan.baidu.com/s/1zujT3WN6rWTNCiwUziwGUQ",
+							msg: "提取码：4ujz，已复制",
+							btn: "true"
+						}
+					});
+				}
+				document.getElementById("button8").onclick = function() {
+					copy("46w6");
+					mui.openWindow({
+						url: 'iframe.html',
+						extras: {
+							title: 'Ecology8下载',
+							src: "https://pan.baidu.com/s/1KWLNrKkn-11GKWXRbRH85g",
+							msg: "提取码：46w6，已复制",
+							btn: "true"
+						}
+					});
+				}
+				document.getElementById("button7").onclick = function() {
+					var xmlhttp = new XMLHttpRequest();
+					// get方法带参数是将参数写在url里面传过去给后端
+					xmlhttp.open("GET", 'https://e-cology.com.cn/weaver/weaver.file.FileDownload?download=1&fileid=' + 874298,
+						true);
+					xmlhttp.setRequestHeader("accept", "*/*");
+					xmlhttp.setRequestHeader("pragma", "no-cache");
+					xmlhttp.send();
+					// readyState == 4 为请求完成，status == 200为请求陈宫返回的状态
+					xmlhttp.onreadystatechange = function() {
+						if (xmlhttp.readyState == 2 && xmlhttp.status == 200) {
+							var url = xmlhttp.responseURL;
+							xmlhttp.abort(); //终止请求
+							mui.confirm('下载文件？', '提示', ['复制链接', '直接下载'], function(e) {
+								if (e.index == 0) {
+									copy(url);
+									mui.toast('复制成功！')
+								} else if (e.index == 1) {
+									plus.runtime.openURL(url);
+								}
+							}, 'div')
+						}
+					}
+				}
+			},
+			error: function(xhr, type, errorThrown) {
+				alert("请求失败！请联系作者修复");
+			}
+		});
+	</script>
+</html>

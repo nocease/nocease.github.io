@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">待办流程</h1>
+		</header>
+		<div class="mui-content" id="context">
+
+		</div>
+	</body>
+	<script type="text/javascript">
+		//获取dataKey
+		var dataKey = "";
+		mui.ajax('https://e-cology.com.cn/api/workflow/reqlist/splitPageKey', {
+			data: {
+				method: "all",
+				officalType: -1,
+				viewScope: "doing",
+				complete: 0,
+				viewcondition: 0,
+				menuIds: "1,13",
+				actiontype: "splitpage"
+			},
+			dataType: 'json', //服务器返回json格式数据
+			type: 'post', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			headers: {
+				"accept": "*/*",
+				"pragma": "no-cache"
+			},
+			async: false,
+			success: function(data) {
+				dataKey = data.sessionkey;
+			}
+		});
+		//获取第一页待办流程
+		mui.ajax('https://e-cology.com.cn/api/ec/dev/table/datas', {
+			data: {
+				dataKey: dataKey,
+				current: 1,
+				sortParams: []
+			},
+			dataType: 'json', //服务器返回json格式数据
+			type: 'post', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			headers: {
+				"accept": "*/*",
+				"pragma": "no-cache"
+			},
+			async: false,
+			success: function(data) {
+				mui.each(data.datas, function(index, element) {
+					document.getElementById("context").innerHTML +=
+						'<div class="mui-card" style="width: 320px;margin: 15px auto;"> <div class="mui-card-header mui-card-media"> <div class="mui-media-body" style="margin:10px"> ' +
+						element.requestname + ' <p class="mui-pull-right">' + element.createrspan + '</p> <p>' + element.requestmark +
+						'</p> </div> </div> <div class="mui-card-footer"> <a class="mui-card-link"></a> <a class="mui-card-link">' +
+						element.createdatespan + '</a> <a class="mui-card-link"><button onclick="workflow(' + element.requestid +
+						',' + element.workflowid + ')" class="mui-btn mui-btn-outlined">' + element
+						.status + '</button></a> </div> </div>';
+				})
+				document.getElementById("context").innerHTML += '<div align="center"><p>最多显示最新10条</p></div>';
+			}
+		});
+
+		//打开一条流程
+		function workflow(requestid, workflowid) {
+			// mui.openWindow({
+			// 	url: 'iframe.html',
+			// 	extras: {
+			// 		title: '流程详情',
+			// 		src: 'https://e-cology.com.cn/spa/workflow/static4form/index.html#/main/workflow/req?requestid=' + requestid +
+			// 			'&workflowid=' + workflowid
+			// 	}
+			// });
+			mui.openWindow('https://e-cology.com.cn/spa/workflow/static4form/index.html#/main/workflow/req?requestid=' +
+				requestid + '&workflowid=' + workflowid);
+		}
+	</script>
+</html>
