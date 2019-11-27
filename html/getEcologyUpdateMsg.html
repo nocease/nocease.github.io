@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title></title>
+		<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div align="center">
+			<div id="app"></div>
+			<button onclick="e9()">下载Ecology9</button>
+			<button onclick="e8()">下载Ecology8</button>
+			<button onclick="e7()">下载Ecology7</button>
+		</div>
+	</body>
+	<script type="text/javascript">
+		$.ajax('https://e-cology.com.cn/api/portal/element/doccontent', {
+			data: {
+				eid: 63817,
+				hpid: 108,
+				subCompanyId: 1,
+				styleid: 'package3',
+				ebaseid: 25
+			},
+			headers: {
+				"accept": "*/*",
+				"pragma": "no-cache"
+			},
+			dataType: 'json', //服务器返回json格式数据
+			type: 'post', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			async: true,
+			success: function(data) {
+				if (data.status == false) {
+					$('#app').html("未登录！请登录后刷新重试。");
+					window.open("https://e-cology.com.cn");
+				} else {
+					var strhtml = data.data;
+					$('#app').html(strhtml.replace("2019年产品发布计划", "Ecology更新预告"));
+				}
+			},
+			error: function(xhr, type, errorThrown) {
+				$('#app').html("获取更新内容失败：请允许浏览器跨域传值！");
+			}
+		});
+	</script>
+	<script type="text/javascript">
+		function e7() {
+			window.open("https://e-cology.com.cn/spa/document/index.jsp?id=1408387&router=1#/main/document/detail?_key=bjavlx")
+		}
+
+		function e8() {
+			window.open("https://e-cology.com.cn/spa/document/index.jsp?id=1786130&router=1#/main/document/detail?_key=ew87rx")
+		}
+
+		function e9() {
+			window.open("https://e-cology.com.cn/spa/document/index.jsp?id=3861088&router=1#/main/document/detail?_key=duey9r")
+		}
+	</script>
+</html>
