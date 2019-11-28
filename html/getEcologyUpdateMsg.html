@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title></title>
-		<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://nocease.github.io/lib/js/CorsAjax.js" type="text/javascript" charset="utf-8"></script>
 	</head>
 	<body>
 		<div align="center">
@@ -15,23 +15,19 @@
 		</div>
 	</body>
 	<script type="text/javascript">
-		$.ajax('https://e-cology.com.cn/api/portal/element/doccontent', {
+		CorsAjax({
+			url: "https://e-cology.com.cn/api/portal/element/doccontent",
 			data: {
-				eid: 63817,
-				hpid: 108,
-				subCompanyId: 1,
-				styleid: 'package3',
-				ebaseid: 25
+				"eid": "63817",
+				"hpid": "108",
+				"subCompanyId": "1",
+				"styleid": "package3",
+				"ebaseid": "25"
 			},
-			headers: {
-				"accept": "*/*",
-				"pragma": "no-cache"
-			},
-			dataType: 'json', //服务器返回json格式数据
 			type: 'post', //HTTP请求类型
 			timeout: 10000, //超时时间设置为10秒；
-			async: true,
-			success: function(data) {
+			success: function(d) {
+				var data = JSON.parse(d);
 				if (data.status == false) {
 					$('#app').html("未登录！请登录后刷新重试。");
 					window.open("https://e-cology.com.cn");
@@ -40,7 +36,7 @@
 					$('#app').html(strhtml.replace("2019年产品发布计划", "Ecology更新预告"));
 				}
 			},
-			error: function(xhr, type, errorThrown) {
+			error: function() {
 				$('#app').html("获取更新内容失败：请允许浏览器跨域传值！");
 			}
 		});
