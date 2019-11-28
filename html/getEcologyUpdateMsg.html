@@ -29,15 +29,16 @@
 			success: function(d) {
 				var data = JSON.parse(d);
 				if (data.status == false) {
-					$('#app').html("未登录！请登录后刷新重试。");
+					
+					document.getElementById("app").innerHTML="未登录！请登录后刷新重试。";
 					window.open("https://e-cology.com.cn");
 				} else {
 					var strhtml = data.data;
-					$('#app').html(strhtml.replace("2019年产品发布计划", "Ecology更新预告"));
+					document.getElementById("app").innerHTML=strhtml.replace("2019年产品发布计划", "Ecology更新预告");
 				}
 			},
 			error: function() {
-				$('#app').html("获取更新内容失败：请允许浏览器跨域传值！");
+				document.getElementById("app").innerHTML="获取更新内容失败：请允许浏览器跨域传值！";
 			}
 		});
 	</script>
