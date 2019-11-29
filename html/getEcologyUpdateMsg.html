@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title></title>
-		<script src="https://nocease.github.io/lib/js/CorsAjax.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../lib/js/CorsAjax.js" type="text/javascript" charset="utf-8"></script>
 	</head>
 	<body>
 		<div align="center">
@@ -29,19 +29,20 @@
 			success: function(d) {
 				var data = JSON.parse(d);
 				if (data.status == false) {
-					
-					document.getElementById("app").innerHTML="未登录！请登录后刷新重试。";
+
+					document.getElementById("app").innerHTML = "未登录！请登录后刷新重试。";
 					window.open("https://e-cology.com.cn");
 				} else {
 					var strhtml = data.data;
-					document.getElementById("app").innerHTML=strhtml.replace("2019年产品发布计划", "Ecology更新预告");
+					document.getElementById("app").innerHTML = strhtml.replace("2019年产品发布计划", "Ecology更新预告");
 				}
 			},
 			error: function() {
-				document.getElementById("app").innerHTML="获取更新内容失败：请允许浏览器跨域传值！";
+				document.getElementById("app").innerHTML = "获取更新内容失败：请允许浏览器跨域传值！";
 			}
 		});
 	</script>
+
 	<script type="text/javascript">
 		function e7() {
 			window.open("https://e-cology.com.cn/spa/document/index.jsp?id=1408387&router=1#/main/document/detail?_key=bjavlx")
