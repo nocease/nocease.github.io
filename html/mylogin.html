@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>常用站点登录</title>
+		<link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" />
+		<script src="https://www.layuicdn.com/layui-v2.5.5/layui.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<style type="text/css">
+		.layui-container {
+			margin-top: 50px;
+		}
+
+		.layui-anim {
+			width: 250px;
+			height: 150px;
+			border-radius: 200px;
+			background-color: #2AC845;
+			margin: 20px;
+			font-size: 30px;
+			font-weight: 800;
+			line-height: 150px;
+			text-align: center;
+			cursor: pointer;
+		}
+	</style>
+	<body>
+		<div class="layui-container">
+			<div class="layui-row">
+				<div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+					<div class="layui-anim layui-anim-scaleSpring">百度</div>
+				</div>
+				<div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+					<div class="layui-anim layui-anim-upbit">CSDN</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		layui.use(['layer', 'jquery'], function() {
+			var layer = layui.layer;
+			var $ = layui.$;
+			$(".layui-anim").click(function(e) {
+				var type = this.innerHTML;
+				if (type == "百度") {
+					layer.open({
+						type: 2,
+						content: 'https://graph.qq.com/oauth2.0/show?which=Login&display=pc&client_id=100312028&response_type=code&redirect_uri=https%3A%2F%2Fpassport.baidu.com%2Fphoenix%2Faccount%2Fafterauth%3Fmkey%3Dd192f6e977a8e0c8a4cf36c8ede3840dfd1628473cd0b1ff8b%26tpl%3Dmn&state=1576201517&display=page&scope=get_user_info%2Cadd_share%2Cget_other_info%2Cget_fanslist%2Cget_idollist%2Cadd_idol%2Cget_simple_userinfo&traceid=',
+						area: ['200px', '200px'],
+						shadeClose: true
+					})
+				} else if (type == "CSDN") {
+					layer.open({
+						type: 2,
+						content: 'https://passport.csdn.net/login?code=public',
+						area: ['200px', '350px'],
+						shadeClose: true
+					})
+				}
+			});
+		})
+	</script>
+</html>
