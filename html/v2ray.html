@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>v2ray客户端软件下载页</title>
+		<link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" />
+		<script src="https://www.layuicdn.com/layui-v2.5.5/layui.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<table class="layui-table">
+			<thead>
+				<tr>
+					<th>操作系统</th>
+					<th>软件名称</th>
+					<th>直接下载</th>
+					<th>软件发布地址</th>
+					<th>使用说明</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Android</td>
+					<td>v2rayNG</td>
+					<td><button onclick="down('https://github.com/2dust/v2rayNG/releases/download/1.1.12/v2rayNG_1.1.12.apk')" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-warm">下载</button></td>
+					<td>
+						<button onclick="fby('https://github.com/2dust/v2rayNG/releases')" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-normal">Github</button>
+					</td>
+					<td><button onclick="shuo(1)" class="layui-btn layui-btn-sm layui-btn-radius">说明</button></td>
+				</tr>
+				<tr>
+					<td>IOS</td>
+					<td>Shadowrocket</td>
+					<td><button onclick="down('https://github.com/nocease/ssr-download/releases/download/ssr%E8%BD%AF%E4%BB%B6%E5%A4%87%E4%BB%BD/Shadowrocket-2.1.10.ipa')"
+						 class="layui-btn layui-btn-sm layui-btn-radius layui-btn-warm">下载</button></td>
+					<td>
+						<button onclick="fby('https://apps.apple.com/us/app/shadowrocket/id932747118')" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-normal">iTunes</button>
+					</td>
+					<td><button onclick="shuo(2)" class="layui-btn layui-btn-sm layui-btn-radius">说明</button></td>
+				</tr>
+				<tr>
+					<td>Windows</td>
+					<td>v2rayN</td>
+					<td><button onclick="down('https://github.com/2dust/v2rayN/releases/download/2.53/v2rayN-Core.zip')" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-warm">下载</button></td>
+					<td>
+						<button onclick="fby('https://github.com/2dust/v2rayN/releases')" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-normal">Github</button>
+					</td>
+					<td><button onclick="shuo(3)" class="layui-btn layui-btn-sm layui-btn-radius">说明</button></td>
+				</tr>
+				<tr>
+					<td>Mac</td>
+					<td>v2rayX</td>
+					<td><button onclick="down('https://github.com/Cenmrev/V2RayX/releases/download/v1.5.1/V2RayX.app.zip')" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-warm">下载</button></td>
+					<td>
+						<button onclick="fby('https://github.com/Cenmrev/V2RayX/releases')" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-normal">Github</button>
+					</td>
+					<td>
+						<!-- <button onclick="shuo(4)" class="layui-btn layui-btn-sm layui-btn-radius">说明</button> -->
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+	<script type="text/javascript">
+		layui.use('layer', function() {
+			layui.layer.alert('建议使用电脑访问本页面。');
+		})
+
+		function fby(url) {
+			window.open(url);
+		}
+
+		function down(url) {
+			window.open(url);
+		}
+
+		function shuo(id) {
+			layui.use('layer', function() {
+				var layer = layui.layer;
+				if (id == 1) {
+					layer.open({
+						type: 1,
+						title: 'Android-使用说明',
+						area: ['300px', '150px'],
+						shadeClose: true,
+						content: '<p>1.复制vmess链接；</p><p>2.下载app后安装打开</p><p>3.点击右上角+号，选择从粘贴板导入</p><p>4.选择导入的配置，点击连接</p>'
+					})
+				} else if (id == 2) {
+					layer.open({
+						type: 1,
+						title: 'IOS-使用说明',
+						area: ['350px', '150px'],
+						shadeClose: true,
+						content: '<p><p>1.需要登录美区的appleID才能下载该软件</p><p>2.如果借账号，注意账号可信度，防止被锁机</p><p>3.ios软件无法一键导入vmess链接，需要手动填写配置</p></p>'
+					})
+				} else if (id == 3) {
+					layer.open({
+						type: 1,
+						title: 'Windows-使用说明',
+						area: ['520px', '200px'],
+						shadeClose: true,
+						content: '<p> <br /> </p> <p> 1.下载软件后解压到任意目录 </p> <p> 2.双击运行v2rayN.exe </p> <p> 3.电脑右下角任务栏出现图标 </p> <p> 4.复制vmess链接 </p> <p> 5.“右击”电脑右下角图标，选择“从粘贴板导入url” </p> <p> 6.<span>“右击”电脑右下角图标，http代理选择“开启http代理，并自动配置PAC(PAC模式)”</span> </p> <p> <br /> </p>'
+					})
+				} else if (id == 4) {
+					// layer.open({
+					// 	type: 1,
+					// 	title: '使用说明',
+					// 	area: ['200px', '300px'],
+					// 	content: ''
+					// })
+				}
+			})
+		}
+	</script>
+</html>
