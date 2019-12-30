@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>腾讯视频直链解析</title>
+		<script src="../js/CorsAjax.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div align="center">
+			<h2>输入自己<a target="_blank" href="https://v.qq.com/u/upload.html">上传</a>的腾讯视频地址</h2>
+			<input type="text" id="txurl" style="width: 400px;" autocomplete="off" />
+			<button onclick="get()" style="width: 100px;height: 30px;">转化</button>
+			<hr>
+			<div id="result" style="display: none;">
+				<p id="title"></p>
+				<input type="text" id="url" style="width: 400px;" />
+				<button onclick="window.open(document.getElementById('url').value)" style="width: 100px;height: 30px;">打开</button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		function get() {
+			let txurl = document.getElementById("txurl").value;
+			let vids = txurl.split("\/")[txurl.split("\/").length - 1].split(".")[0];
+			CorsAjax({
+				type: 'post',
+				url: 'http://vv.video.qq.com/getinfo?platform=101001&charge=0&otype=json',
+				data: {
+					vids: vids
+				},
+				success: function(data) {
+					let json = JSON.parse(data.substring(13, data.length - 1));
+
+					if (json.msg == "vid is wrong") {
+						document.getElementById("result").style.display = "none";
+						alert("不支持该链接！");
+					} else {
+						document.getElementById("result").style.display = "";
+						let fvkey = json.vl.vi[0].fvkey;
+						let fn = json.vl.vi[0].fn;
+						let urltitle = json.vl.vi[0].ul.ui[0].url;
+						let title = json.vl.vi[0].ti;
+						let lasturl = urltitle + fn + "?vkey=" + fvkey;
+						document.getElementById("title").innerHTML = title;
+						document.getElementById("url").value = lasturl;
+					}
+				}
+			})
+		}
+	</script>
+</html>
