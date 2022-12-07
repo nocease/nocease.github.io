@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://cdn.bootcdn.net/ajax/libs/mui/3.7.1/css/mui.min.css" rel="stylesheet">
+		<script src="https://cdn.bootcdn.net/ajax/libs/mui/3.7.1/js/mui.min.js"></script>
+		<title>让我看看谁没收到</title>
+	</head>
+	<body align="center">
+		<div class="mui-input-row mui-search">
+			<input type="search" id="cuntext" class="mui-input-clear" placeholder="请输入内容">
+		</div>
+		<button type="button" id="btn1" class="mui-btn mui-btn-primary">检测</button>
+		<button type="button" id="btn2" class="mui-btn mui-btn-warning">清除</button>
+		<div id="result" style="text-align:left;display:none">
+			<div class="mui-card">
+				<div class="mui-card-header">未收到回复的村：</div>
+				<div class="mui-card-content">
+					<ul class="mui-table-view"></ul>
+				</div>
+				<div class="mui-card-footer"></div>
+			</div>
+			<div class="mui-card">
+				<div class="mui-card-header">已收到回复的村：</div>
+				<div class="mui-card-content">
+					<ul class="mui-table-view"></ul>
+				</div>
+				<div class="mui-card-footer"></div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		//定义一个数组cun，存放34个村名
+		var cun = ["东山底", "下贯峪", "店西峪", "桐花", "虎道", "拳峪", "围场", "石家栏", "上贯峪", "李家坪", "常青", "卜连庄", "驾游", "岭西", "东沟", "上红鹤",
+			"下红鹤", "贾庄", "西沟", "七峪", "鸡亮", "南沟", "东岩峪", "孟家庄", "魏家庄", "青羊头", "店上", "张家庄", "双石铺", "梁家庄", "方脑", "寺台", "戎家庄",
+			"槐树庄"
+		];
+		//当点击检测按钮时执行以下操作
+		document.getElementById("btn1").onclick = function() {
+			//定义一个数组okcun，用来存放已经回复收到的村名
+			var okcun = [];
+			//定义一个数组nocun，用来存放没有回复收到的村名
+			var nocun = [];
+			//获取输入框中的文字
+			var cuntext = document.getElementById("cuntext").value;
+			//找出来输入框中文字包含的村名，即已经回复收到的村，放到okcun数组中
+			for (let i = 0; i < cun.length; i++) {
+				if (cuntext.indexOf(cun[i]) != -1) {
+					okcun.unshift(cun[i]);
+				}
+			}
+			//比对出来没有回复收到的村名，放到nocun数组中
+			for (let j = 0; j < cun.length; j++) {
+				if ((okcun + "").indexOf(cun[j]) == -1) {
+					nocun.unshift(cun[j]);
+				}
+			}
+			//将数据结果显示在页面上
+			document.getElementsByClassName("mui-card-footer")[1].innerHTML = "共" + okcun.length + "个";
+			document.getElementsByClassName("mui-card-footer")[0].innerHTML = "共" + nocun.length + "个";
+			document.getElementsByClassName("mui-table-view")[1].innerHTML = "";
+			document.getElementsByClassName("mui-table-view")[0].innerHTML = "";
+			for (let i = 0; i < okcun.length; i++) {
+				document.getElementsByClassName("mui-table-view")[1].innerHTML += '<li class="mui-table-view-cell">' +
+					okcun[i] + '</li>';
+			}
+			for (let i = 0; i < nocun.length; i++) {
+				document.getElementsByClassName("mui-table-view")[0].innerHTML += '<li class="mui-table-view-cell">' +
+					nocun[i] + '</li>';
+			}
+			document.getElementById("result").style.display = "";
+		}
+
+		//当点击清除按钮时执行以下操作
+		document.getElementById("btn2").onclick = function() {
+			document.getElementById("cuntext").value = "";
+			document.getElementById("result").style.display = "none";
+		}
+	</script>
+</html>
