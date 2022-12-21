@@ -32,7 +32,7 @@
 	</body>
 	<script type="text/javascript">
 		//定义一个数组cun，存放34个村名
-		var cun = ["东山底", "下贯峪", "店西峪", "桐花", "虎道", "拳峪", "围场", "石家栏", "上贯峪", "李家坪", "常青", "卜连庄", "驾游", "岭西", "东沟", "上红鹤",
+		var cun = ["东山底", "下贯峪", "店西峪", "桐花", "虎道", "拳峪", "围场", "石家栏", "上贯峪", "李家坪", "赵庄村", "卜连庄", "驾游", "岭西", "东沟", "上红鹤",
 			"下红鹤", "贾庄", "西沟", "七峪", "鸡亮", "南沟", "东岩峪", "孟家庄", "魏家庄", "青羊头", "店上", "张家庄", "双石铺", "梁家庄", "方脑", "寺台", "戎家庄",
 			"槐树庄"
 		];
@@ -44,18 +44,35 @@
 			var nocun = [];
 			//获取输入框中的文字
 			var cuntext = document.getElementById("cuntext").value;
+
 			//找出来输入框中文字包含的村名，即已经回复收到的村，放到okcun数组中
 			for (let i = 0; i < cun.length; i++) {
 				if (cuntext.indexOf(cun[i]) != -1) {
-					okcun.unshift(cun[i]);
+					okcun.push(cun[i]);
 				}
 			}
+
+			//bug修复，别名处理。对驾游驾遊、魏家庄未家庄、赵庄村进行特殊判断
+			if (cuntext.indexOf("驾游") == -1) {
+				if (cuntext.indexOf("驾遊") != -1)
+					okcun.push("驾游");
+			}
+			if (cuntext.indexOf("魏家庄") == -1) {
+				if (cuntext.indexOf("未家庄") != -1)
+					okcun.push("魏家庄");
+			}
+			if (cuntext.indexOf("赵庄村") == -1) {
+				if (cuntext.indexOf("常青") != -1)
+					okcun.push("赵庄村");
+			}
+
 			//比对出来没有回复收到的村名，放到nocun数组中
 			for (let j = 0; j < cun.length; j++) {
 				if ((okcun + "").indexOf(cun[j]) == -1) {
-					nocun.unshift(cun[j]);
+					nocun.push(cun[j]);
 				}
 			}
+
 			//将数据结果显示在页面上
 			document.getElementsByClassName("mui-card-footer")[1].innerHTML = "共" + okcun.length + "个";
 			document.getElementsByClassName("mui-card-footer")[0].innerHTML = "共" + nocun.length + "个";
