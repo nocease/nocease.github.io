@@ -198,6 +198,7 @@
 	<script>
 		//模拟扫码登录（测试版）
 		async function wccode() {
+			$("#log").prepend("<hr>");
 			for (let i = 0; i < 100; i++) {
 				await new Promise(resolve => {
 					$.ajax({
@@ -218,6 +219,7 @@
 					});
 				});
 			}
+			$("#log").prepend("<hr>");
 		}
 	</script>
 </html>
