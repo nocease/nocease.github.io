@@ -75,7 +75,7 @@
 									$("#p1").append("当前账号所属村：" + data.data.deptName + "<br>")
 									$("#p1").append("已获取当前村用于验证扫码的加密时间戳：" + ctime + "<br>")
 									$("#p1").append("已获取当前村的deptId：" + deptId + "<br>")
-									$("#log").append("<hr>已登录成功并抓取了关键数据。")
+									$("#log").prepend("<hr>已登录成功并抓取了关键数据。")
 									document.getElementById("tap2").style.display = "";
 								},
 							})
